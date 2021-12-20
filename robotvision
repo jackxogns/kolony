@@ -7,9 +7,9 @@ import pytesseract
 #이미지를 불러오고 사용할 이미지의 크기정하기
 img_ori = cv2.imread('car.jpg')
 height, width, channel = img_ori.shape
-gray = cv2.cvtColor(img_ori, cv2.COLOR_BGR2GRAY)
 
 # grayscale로 변환하기
+gray = cv2.cvtColor(img_ori, cv2.COLOR_BGR2GRAY)
 structuringElement = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 imgTopHat = cv2.morphologyEx(gray, cv2.MORPH_TOPHAT, structuringElement)
 imgBlackHat = cv2.morphologyEx(gray, cv2.MORPH_BLACKHAT, structuringElement)
@@ -37,15 +37,17 @@ _, contours, _ = cv2.findContours(
 temp_result = np.zeros((height, width, channel), dtype=np.uint8)
 
 cv2.drawContours(temp_result, contours=contours, contourIdx=-1, color=(255, 255, 255))
+
+
+# 각각 이미지 특징을 사각형으로 바운딩처리해주기
 temp_result = np.zeros((height, width, channel), dtype=np.uint8)
 
 contours_dict = []
 
-# 각각 이미지 특징을 사각형으로 바운딩처리해주기
 for contour in contours:
     x, y, w, h = cv2.boundingRect(contour)
     cv2.rectangle(temp_result, pt1=(x, y), pt2=(x+w, y+h), color=(255, 255, 255), thickness=2)
-    
+ # 컨투어들 딕셔너리에 저장하기   
     # insert to dict
     contours_dict.append({
         'contour': contour,
